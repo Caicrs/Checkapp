@@ -1,12 +1,12 @@
 import React from 'react';
 import {colors} from '../assets/styles/colors';
-import Logo from '../assets/logo.svg';
+import Logo from "../assets/logo.svg";
 import InputFirst from '../components/atoms/input_first';
 import ButtonFirst from '../components/atoms/button_first';
-import {Image, Text, View} from 'react-native';
+import {Image, Text, View,StyleSheet,TouchableOpacity} from 'react-native';
 import styled from 'styled-components';
 
-const Login = () => {
+const Login = ({navigation}) => {
   return (
     <Container>
       <Box>
@@ -19,11 +19,40 @@ const Login = () => {
           <InputFirst placeholder={"Insira sua senha"} />
         </Inputs>
 
-        <ButtonFirst />
+        <TouchableOpacity
+    onPress={() =>
+      navigation.push('Homepage')
+    }
+      style={styles.appButtonContainer}>
+      <Text style={styles.appButtonText}>Entrar</Text>
+    </TouchableOpacity>
+
+
       </BoxInput>
     </Container>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+   
+  },
+  appButtonContainer: {
+    width: "85%",
+    height:50,
+    backgroundColor: colors.secondaryColor,
+    borderRadius: 8,
+    justifyContent:'center'
+  },
+  appButtonText: {
+    fontSize: 18,
+    color: colors.primaryColor,
+    fontFamily: 'Sora-Bold',
+    alignSelf: 'center',
+  },
+});
 
 const Icon = styled(Image)``;
 
@@ -56,9 +85,9 @@ const Inputs = styled(View)`
 `;
 
 const Title = styled(Text)`
-  font-weight: 700;
   padding: 25% 0 20% 0;
-  font-size: 20px;
+  font-size: 28px;
+  fontFamily: 'Sora-Bold';
   color: ${colors.primaryTextColor};
   text-align: center;
 `;

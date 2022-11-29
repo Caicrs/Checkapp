@@ -1,28 +1,39 @@
-import styled from 'styled-components'
-import {TextInput } from "react-native";
-import { colors } from '../../assets/styles/colors';
+import styled from 'styled-components';
+import {TextInput, StyleSheet, View} from 'react-native';
+import {colors} from '../../assets/styles/colors';
 
 interface Input {
-    placeholder: string;
+  placeholder: string;
 }
 
-const InputFirst = (placeholder:any) => {
-return(
-<Input
-placeholder="texto aqui"
-placeholderTextColor="#2D2D2D"
-/>
-)
-}
+const InputFirst = (placeholder: any) => {
+  return (
+    <View style={styles.box}>
+      <TextInput
+        style={styles.input}
+        placeholder={placeholder.placeholder}
+        placeholderTextColor="#2D2D2D"
+        autoCapitalize="none"
+      />
+    </View>
+  );
+};
 
-const Input = styled(TextInput)`
-width:85%;
-height: 40px;
-margin: 12px;
-border-radius: 8px;
-padding: 20px 10px 20px 10px;
-color:red;
-backgroundColor: ${colors.primaryTextColor};
-`;
+const styles = StyleSheet.create({
+  box: {
+    width: '85%',
+  },
+  input: {
+    color: '#2D2D2D',
+    marginTop:15,
+    marginBottom: 15,
+    borderRadius: 8,
+    height:50,
+    paddingRight: 15,
+    paddingLeft: 15,
+    fontFamily: 'Sora-Regular',
+    backgroundColor: colors.primaryTextColor,
+  },
+});
 
 export default InputFirst;
