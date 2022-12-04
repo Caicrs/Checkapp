@@ -10,7 +10,7 @@ const Login = ({navigation}) => {
   return (
     <Container>
       <Box>
-        <Logo fill="#EAEAEA" width={50} height={50} />
+        <Logo fill={colors.white} width={50} height={50} />
         <Title>Login</Title>
       </Box>
       <BoxInput>
@@ -21,7 +21,7 @@ const Login = ({navigation}) => {
 
         <TouchableOpacity
     onPress={() =>
-      navigation.push('Homepage')
+      navigation.navigate('Homepage')
     }
       style={styles.appButtonContainer}>
       <Text style={styles.appButtonText}>Entrar</Text>

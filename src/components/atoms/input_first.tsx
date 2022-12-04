@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import {TextInput, StyleSheet, View} from 'react-native';
 import {colors} from '../../assets/styles/colors';
+import { useRef } from 'react';
 
 interface Input {
   placeholder: string;
@@ -8,7 +9,7 @@ interface Input {
 
 const InputFirst = (placeholder: any) => {
   return (
-    <View style={styles.box}>
+    <View style={styles.box }>
       <TextInput
         style={styles.input}
         placeholder={placeholder.placeholder}
