@@ -1,12 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {colors} from '../assets/styles/colors';
-import Logo from "../assets/logo.svg";
-import InputFirst from '../components/atoms/input_first';
-import ButtonFirst from '../components/atoms/button_first';
-import {Image, Text, View,StyleSheet,TouchableOpacity} from 'react-native';
+import Logo from '../assets/logo.svg';
+
+import {TextInput, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import styled from 'styled-components';
 
 const Login = ({navigation}) => {
+  const [username,setUsername] = useState('');
+  const [password,setPassword] = useState('');
+
+
+function Submit () {
+  console.log(username);
+  console.log(password);
+  // navigation.navigate('Homepage')
+}
+
+
   return (
     <Container>
       <Box>
@@ -15,36 +25,46 @@ const Login = ({navigation}) => {
       </Box>
       <BoxInput>
         <Inputs>
-          <InputFirst placeholder={"Insira seu usuário"} />
-          <InputFirst placeholder={"Insira sua senha"} />
+          <View style={styles.box}>
+            <TextInput
+              value={username}
+              onChangeText={text => setUsername(text)}
+              style={styles.input}
+              placeholder={'Insira seu usuário'}
+              placeholderTextColor="#2D2D2D"
+              autoCapitalize="none"
+            />
+          </View>
+          <View style={styles.box}>
+            <TextInput
+            textContentType='password'
+              value={password}
+              onChangeText={text => setPassword(text)}
+              style={styles.input}
+              placeholder={'Insira sua senha'}
+              placeholderTextColor="#2D2D2D"
+              autoCapitalize="none"
+            />
+          </View>
         </Inputs>
 
         <TouchableOpacity
-    onPress={() =>
-      navigation.navigate('Homepage')
-    }
-      style={styles.appButtonContainer}>
-      <Text style={styles.appButtonText}>Entrar</Text>
-    </TouchableOpacity>
-
-
+          onPress={() => Submit()}
+          style={styles.appButtonContainer}>
+          <Text style={styles.appButtonText}>Entrar</Text>
+        </TouchableOpacity>
       </BoxInput>
     </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-   
-  },
   appButtonContainer: {
-    width: "85%",
-    height:50,
+    width: '85%',
+    height: 50,
     backgroundColor: colors.secondaryColor,
     borderRadius: 8,
-    justifyContent:'center'
+    justifyContent: 'center',
   },
   appButtonText: {
     fontSize: 18,
@@ -52,9 +72,21 @@ const styles = StyleSheet.create({
     fontFamily: 'Sora-Bold',
     alignSelf: 'center',
   },
+  box: {
+    width: '85%',
+  },
+  input: {
+    color: '#2D2D2D',
+    marginTop: 15,
+    marginBottom: 15,
+    borderRadius: 8,
+    height: 50,
+    paddingRight: 15,
+    paddingLeft: 15,
+    fontFamily: 'Sora-Regular',
+    backgroundColor: colors.primaryTextColor,
+  },
 });
-
-const Icon = styled(Image)``;
 
 const Container = styled(View)`
   margin: 0;
@@ -87,7 +119,7 @@ const Inputs = styled(View)`
 const Title = styled(Text)`
   padding: 25% 0 20% 0;
   font-size: 28px;
-  fontFamily: 'Sora-Bold';
+  fontfamily: 'Sora-Bold';
   color: ${colors.primaryTextColor};
   text-align: center;
 `;
