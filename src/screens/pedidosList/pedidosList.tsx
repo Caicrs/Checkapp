@@ -1,12 +1,10 @@
-import {FlatList, TextInput} from 'react-native-gesture-handler';
+import {FlatList} from 'react-native-gesture-handler';
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet,Text, TouchableOpacity} from 'react-native';
 import {colors} from '../../assets/styles/colors';
 
-const PedidosList = (data: any) => {
-  const [input, setInput] = useState('');
-  const [pedidosData, setPedidosData] = useState(data.data);
-  const newArr = data.data;
+const PedidosList = (result: any) => {
+  const [pedidosData, setPedidosData] = useState(result.data);
 
   const Action = item => {
     const newItem = pedidosData.map(val => {
@@ -18,6 +16,8 @@ const PedidosList = (data: any) => {
     });
     setPedidosData(newItem);
   };
+
+ 
 
   return (
     <FlatList
@@ -31,7 +31,7 @@ const PedidosList = (data: any) => {
             key={item.id}
             style={item.done ? styles.pedidosActive : styles.pedidos}>
             <Text style={item.done ? styles.textIdActive : styles.textId}>
-              {item.id}
+              {item.item}
             </Text>
           </TouchableOpacity>
         );

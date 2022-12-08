@@ -1,22 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import SearchIcon from '../assets/search.svg';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {colors} from '../assets/styles/colors';
 import {FlatList, TextInput} from 'react-native-gesture-handler';
-import InputFirst from '../components/atoms/input_first';
 import {data} from './data';
+import {useAuth} from '../context/AuthContext';
+import LoadingComponent from '../components/loading';
 
-
-interface Filtered {
-  entrega: string;
-  name: string;
-}
 
 const Entregas = ({navigation}) => {
   const [input, setInput] = useState('');
   const [dataSearched, setDataSearched] = useState<any>([]);
+  const {GetAllPedidos, pedidos} = useAuth();
 
-  const test = () => {
+  useEffect(() => {
+    GetAllPedidos();
+  }, []);
+
+  const search = () => {
     if (input != '') {
       console.log(input);
       const result: any[] = [];
@@ -49,24 +50,36 @@ const Entregas = ({navigation}) => {
           autoCapitalize="none"
         />
         <TouchableOpacity
-          onPress={() => test()}
+          onPress={() => search()}
           style={styles.appButtonContainer}>
           <SearchIcon width={24} height={24} />
         </TouchableOpacity>
       </View>
-      <FlatList
-        style={styles.thirdContainer}
-        data={dataSearched.length == 0 ? data : dataSearched}
-        renderItem={({item}) => (
-          <TouchableOpacity onPress={() => navigation.navigate('EntregasDetalhes',{itemData: item})}>
-            <View key={item.entrega} style={styles.card}>
-              <Text style={styles.entregaId}>
-                {item.entrega} - {item.name}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+
+      {pedidos ? (
+        <FlatList
+          style={styles.thirdContainer}
+          data={dataSearched.length == 0 ? pedidos : dataSearched}
+          renderItem={({item}) =>
+            item.pedidos.map(data2 => (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('EntregasDetalhes', {itemData: data2})
+                }>
+                <View
+                  key={Math.floor(Math.random() * 10000)}
+                  style={styles.card}>
+                  <Text style={styles.entregaId}>
+                    {data2.pedido} - {data2.loja}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))
+          }
+        />
+      ) : (
+        <LoadingComponent />
+      )}
     </View>
   );
 };

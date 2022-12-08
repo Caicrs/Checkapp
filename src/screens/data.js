@@ -1,66 +1,24 @@
 export const data = [
-    {
-      entrega: '#12414125FKD937FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-    {
-      entrega: '#12414125FKD7FAS',
-      name: 'Pedro Antonio da Silva',
-    },
-    {
-      entrega: '#124125FKD937FAS',
-      name: 'Fabio Rocha ',
-    },
-    {
-      entrega: '#12414125FK37FAS',
-      name: 'Fabio Silva',
-    },
-    {
-      entrega: '#12414D937FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-    {
-      entrega: '#1241D937FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-    {
-      entrega: '#12414125937FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-    {
-      entrega: '#1241D937FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-     {
-      entrega: '#124141237FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-    {
-      entrega: '#12414137FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-    {
-      entrega: '#12414125937FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-    {
-      entrega: '#124141237FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-    {
-      entrega: '#12414937FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-    {
-      entrega: '#12414125FFAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-    {
-      entrega: '#12414125FKD937FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-    {
-      entrega: '#12414125FKD937FAS',
-      name: 'Carlos Antonio Pedrosa da Silva',
-    },
-  ];
+  {
+    "nome": "string",
+    "layout": "string",
+    "pedidos": [
+      {
+        "loja": "string",
+        "pedido": "string",
+        "itensViewModel": [
+          {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "volume": 0,
+            "sequencia": 0,
+            "item": "string",
+            "ordCompra": "string",
+            "conferido": true,
+            "etiqueta": "string",
+            "qtde": 0
+          }
+        ]
+      }
+    ]
+  }
+]

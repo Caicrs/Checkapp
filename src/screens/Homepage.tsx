@@ -1,25 +1,48 @@
 import React from 'react';
 import Icon from '../assets/delivery-icon.svg';
+import LogoutIcon from '../assets/logout.svg';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {colors} from '../assets/styles/colors';
+import { useAuth } from '../context/AuthContext';
+import LoadingComponent from '../components/loading';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Homepage = ({navigation}) => {
-  return (
-    <View style={styles.container}>
-      <View style={styles.secondContainer}>
-        <Text style={styles.textUser}>Olá Pedro</Text>
-        <Text style={styles.textDate}>Segunda, 17 de agosto 2022</Text>
+  const {signOut,user} = useAuth()
+console.log(user)
+
+  function Logout(){
+    signOut()
+    console.log("Saiu")
+    }
+
+    return (
+      <View style={styles.container}>
+        <View style={styles.secondContainer}>
+          <View style={styles.subContainer}>
+          <Text style={styles.textUser}>Olá {user}</Text>
+          <Text style={styles.textDate}>Segunda, 17 de agosto 2022</Text>
+          </View>
+          <TouchableOpacity
+          style={styles.logout}
+            onPress={() => Logout()}>
+            <LogoutIcon width={32} height={32} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.secondContainer}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Entregas')}
+            style={styles.appButtonContainer}>
+            <Icon width={100} height={100} />
+            <Text style={styles.appButtonText}>Lista de entregas</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.secondContainer}>
+          
+        </View>
       </View>
-      <View style={styles.secondContainer}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Entregas')}
-          style={styles.appButtonContainer}>
-          <Icon width={100} height={100} />
-          <Text style={styles.appButtonText}>Lista de entregas</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    );
+  
 };
 
 export default Homepage;
@@ -29,10 +52,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.primaryColor,
   },
+  logout:{
+    justifyContent:'flex-end',
+  },
   secondContainer: {
     paddingRight: 30,
     paddingLeft: 30,
     paddingTop: 40,
+    display: 'flex',
+    flexDirection: 'row',
+    width:'100%',
+  },
+  subContainer:{
+    flex:1,
   },
   textUser: {
     fontSize: 24,

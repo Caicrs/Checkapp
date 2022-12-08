@@ -1,19 +1,19 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {colors} from '../assets/styles/colors';
-import {FlatList, TextInput} from 'react-native-gesture-handler';
-import {pedidosData} from './dataPedidos';
+import {TextInput} from 'react-native-gesture-handler';
 import PedidosList from './pedidosList/pedidosList';
 
-const EntregasDetalhes = ({route, navigation}) => {
+
+const EntregasDetalhes = ({route}) => {
   const {itemData} = route.params;
   const [input, setInput] = useState('');
 
   return (
     <View style={styles.container}>
       <View style={styles.secondContainer}>
-        <Text style={styles.name}>{itemData.name}</Text>
-        <Text style={styles.entrega}>{itemData.entrega}</Text>
+        <Text style={styles.name}>{'Carlos Dantas'}</Text>
+        <Text style={styles.entrega}>{itemData.pedido}</Text>
       </View>
       <View style={styles.thirdContainer}>
         <View style={styles.codeContainer}>
@@ -47,8 +47,7 @@ const EntregasDetalhes = ({route, navigation}) => {
           <Text style={styles.topic}>Pedidos</Text>
           <Text style={styles.subTopic}>Selecione clicando no pedido</Text>
         </View>
-        
-     <PedidosList data={pedidosData}/>
+        <PedidosList data={itemData.itensViewModel} />
       </View>
     </View>
   );

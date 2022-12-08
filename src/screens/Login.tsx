@@ -1,61 +1,70 @@
 import React, {useState} from 'react';
 import {colors} from '../assets/styles/colors';
 import Logo from '../assets/logo.svg';
-
-import {TextInput, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import LoadingComponent from '../components/loading';
+import {
+  TextInput,
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import styled from 'styled-components';
+import {useAuth} from '../context/AuthContext';
 
 const Login = ({navigation}) => {
-  const [username,setUsername] = useState('');
-  const [password,setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const {signIn, Loading} = useAuth();
 
+  function Submit() {
+    signIn(username, password);
+    // navigation.navigate('Homepage')
+  }
 
-function Submit () {
-  console.log(username);
-  console.log(password);
-  // navigation.navigate('Homepage')
-}
+  if (Loading) {
+    return <LoadingComponent />;
+  } else {
+    return (
+      <Container>
+        <Box>
+          <Logo fill={colors.white} width={50} height={50} />
+          <Title>Login</Title>
+        </Box>
+        <BoxInput>
+          <Inputs>
+            <View style={styles.box}>
+              <TextInput
+                value={username}
+                onChangeText={text => setUsername(text)}
+                style={styles.input}
+                placeholder={'Insira seu usuário'}
+                placeholderTextColor="#2D2D2D"
+                autoCapitalize="none"
+              />
+            </View>
+            <View style={styles.box}>
+              <TextInput
+                textContentType="password"
+                value={password}
+                onChangeText={text => setPassword(text)}
+                style={styles.input}
+                placeholder={'Insira sua senha'}
+                placeholderTextColor="#2D2D2D"
+                autoCapitalize="none"
+              />
+            </View>
+          </Inputs>
 
-
-  return (
-    <Container>
-      <Box>
-        <Logo fill={colors.white} width={50} height={50} />
-        <Title>Login</Title>
-      </Box>
-      <BoxInput>
-        <Inputs>
-          <View style={styles.box}>
-            <TextInput
-              value={username}
-              onChangeText={text => setUsername(text)}
-              style={styles.input}
-              placeholder={'Insira seu usuário'}
-              placeholderTextColor="#2D2D2D"
-              autoCapitalize="none"
-            />
-          </View>
-          <View style={styles.box}>
-            <TextInput
-            textContentType='password'
-              value={password}
-              onChangeText={text => setPassword(text)}
-              style={styles.input}
-              placeholder={'Insira sua senha'}
-              placeholderTextColor="#2D2D2D"
-              autoCapitalize="none"
-            />
-          </View>
-        </Inputs>
-
-        <TouchableOpacity
-          onPress={() => Submit()}
-          style={styles.appButtonContainer}>
-          <Text style={styles.appButtonText}>Entrar</Text>
-        </TouchableOpacity>
-      </BoxInput>
-    </Container>
-  );
+          <TouchableOpacity
+            onPress={() => Submit()}
+            style={styles.appButtonContainer}>
+            <Text style={styles.appButtonText}>Entrar</Text>
+          </TouchableOpacity>
+        </BoxInput>
+      </Container>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
