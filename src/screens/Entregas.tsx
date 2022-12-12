@@ -7,7 +7,6 @@ import {data} from './data';
 import {useAuth} from '../context/AuthContext';
 import LoadingComponent from '../components/loading';
 
-
 const Entregas = ({navigation}) => {
   const [input, setInput] = useState('');
   const [dataSearched, setDataSearched] = useState<any>([]);
@@ -16,6 +15,8 @@ const Entregas = ({navigation}) => {
   useEffect(() => {
     GetAllPedidos();
   }, []);
+
+  
 
   const search = () => {
     if (input != '') {
@@ -60,22 +61,19 @@ const Entregas = ({navigation}) => {
         <FlatList
           style={styles.thirdContainer}
           data={dataSearched.length == 0 ? pedidos : dataSearched}
-          renderItem={({item}) =>
-            item.pedidos.map(data2 => (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('EntregasDetalhes', {itemData: data2})
-                }>
-                <View
-                  key={Math.floor(Math.random() * 10000)}
-                  style={styles.card}>
-                  <Text style={styles.entregaId}>
-                    {data2.pedido} - {data2.loja}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))
-          }
+          renderItem={({item}) => (
+            
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('EntregasDetalhes', {itemData: item})
+              }>
+              <View key={Math.floor(Math.random() * 10000)} style={styles.card}>
+                <Text style={styles.entregaId}>
+                  {item.nome} | {item.dataPrevisao.substr(0, 10)} 
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
         />
       ) : (
         <LoadingComponent />

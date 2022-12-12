@@ -1,10 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import api from '../services/Api';
 import {AllToast} from '../components/toast';
 import axios from 'axios';
@@ -64,7 +59,7 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
     }
   }
 
-    // SignOut function
+  // SignOut function
   async function signOut(): Promise<void> {
     setToken(false);
     setUser(false);
@@ -72,23 +67,27 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
     AsyncStorage.removeItem('User');
   }
 
-    // Get All Pedidos function
+  // Get All Pedidos function
   async function GetAllPedidos() {
     console.log('get all -----------');
+    const tkn = await token.replace(/("|')/g, '');
+    console.log(tkn)
     try {
-      const res = await axios.get('https://sisconfweb-api.azurewebsites.net/api/v1/AppDesktop/cargas-entrada', {
+      const res = await api.get('/api/v1/cargaEntrada/obter-entrada', {
         headers: {
-          Authorization: 'Bearer ' + token.replace(/["]+/g),
+          Authorization: `Bearer ${tkn}`,
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
       });
-      setPedidos(res.data);
+
+      setPedidos(res.data.data);
       return res;
     } catch (error: any) {
       console.log(error);
       AllToast.ToastError('Desculpe...ocorreu um erro');
     }
+  
   }
 
   // Load datas from storage function
@@ -102,7 +101,7 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
     }
   }
 
-  // Joining all variables that we want to export 
+  // Joining all variables that we want to export
   return (
     <AuthContext.Provider
       value={{

@@ -1,23 +1,12 @@
 import {FlatList} from 'react-native-gesture-handler';
 import React, {useState} from 'react';
-import {StyleSheet,Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../assets/styles/colors';
 
-const PedidosList = (result: any) => {
+const PedidosList = (result: any, check: any) => {
   const [pedidosData, setPedidosData] = useState(result.data);
-
-  const Action = item => {
-    const newItem = pedidosData.map(val => {
-      if (val.id === item.id) {
-        return {...val, done: !val.done};
-      } else {
-        return val;
-      }
-    });
-    setPedidosData(newItem);
-  };
-
- 
+  console.log("-----------")
+  console.log(check)
 
   return (
     <FlatList
@@ -26,14 +15,17 @@ const PedidosList = (result: any) => {
       keyExtractor={item => item.id}
       renderItem={({item}) => {
         return (
-          <TouchableOpacity
-            onPress={() => Action(item)}
-            key={item.id}
-            style={item.done ? styles.pedidosActive : styles.pedidos}>
-            <Text style={item.done ? styles.textIdActive : styles.textId}>
-              {item.item}
+          <View key={item.id} style={styles.pedidosActive}>
+            <Text style={styles.textId}>
+             {item.loja}
             </Text>
-          </TouchableOpacity>
+            <Text style={styles.textId}>
+             Pedido : {item.pedido}
+            </Text>
+            <Text style={styles.textId}>
+              Quantidade :  0 / {item.itens.length} 
+            </Text>
+          </View>
         );
       }}
     />
@@ -45,7 +37,9 @@ export default PedidosList;
 const styles = StyleSheet.create({
   flatlist: {
     display: 'flex',
-    height: 150,
+    borderColor: colors.white50,
+
+    borderWidth: 1,
   },
   pedidos: {
     paddingTop: 5,
@@ -55,18 +49,21 @@ const styles = StyleSheet.create({
     borderColor: colors.white,
     borderWidth: 1,
     borderRadius: 10,
+    backgroundColor: colors.black
   },
   pedidosActive: {
-    backgroundColor: colors.white,
-    color: 'black',
-    paddingTop: 5,
-    paddingBottom: 5,
-    paddingLeft: 10,
+    backgroundColor: colors.black,
+    color: colors.white,
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 20,
+    paddingRight: 20,
     marginBottom: 15,
     borderRadius: 10,
   },
   textId: {
     color: colors.white,
+    fontWeight: '700',
   },
   textIdActive: {
     color: colors.black,
