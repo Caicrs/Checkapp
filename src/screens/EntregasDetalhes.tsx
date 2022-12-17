@@ -1,97 +1,101 @@
-import React, {useState, useRef} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import React, {useState, useRef, useEffect} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+
 import {colors} from '../assets/styles/colors';
 import {TextInput} from 'react-native-gesture-handler';
 import PedidosList from './pedidosList/pedidosList';
 import {AllToast} from '../components/toast';
 import moment from 'moment';
+import {useAuth} from '../context/AuthContext';
 
 interface CheckPedido {
   itens: any[];
   data: string;
-  longitude: string;
-  latitude: string;
+  longitude: number;
+  latitude: number;
 }
 
-const EntregasDetalhes = ({route}) => {
+const EntregasDetalhes = ({route, navigation}) => {
   const {itemData} = route.params;
   const [input, setInput] = useState('');
-  const long = useRef('');
-  const lati = useRef('');
   const time = useRef('');
-  const newData = useRef<CheckPedido>({
+  const selectedItems = useRef<any[]>([]);
+  const [allItems, setAllItems] = useState<any[]>([]);
+  const {myLocation, PostPedido,playSound, longitude, latitude, backPage} = useAuth();
+  const [isLoading, setLoading] = useState(true);
+
+  const newFinish = useRef<CheckPedido>({
     itens: [],
     data: '',
-    longitude: long.current,
-    latitude: lati.current,
+    longitude: longitude,
+    latitude: latitude,
   });
 
-  var pedidos: any[] = [];
-
   // scanItens for put the itens inside the pedidos array variable
-  function scanItens() {
-    for (let i = 0; i < itemData.pedidos.length; i++) {
-      itemData.pedidos[i].itens.map(data => {
-        pedidos.push(data);
-      });
+
+  useEffect(() => {
+    if (allItems.length < 1) {
+      for (let i = 0; i < itemData.pedidos.length; i++) {
+        itemData.pedidos[i].itens.map(res => {
+          if (res.conferido === null) {
+            allItems.push(res);
+            setLoading(false);
+          }
+        });
+      }
+    }
+    myLocation();
+  }, []);
+
+  function finishAll() {
+    getLocal();
+    PostPedido(newFinish.current);
+    if (backPage.current == 1) {
+      navigation.navigate('Entregas');
     }
   }
-
-  scanItens();
 
   function getLocal() {
     moment.locale('pt-br');
-    var dateHour = moment().format('DD/MM/YYYY, hh:mm:ss');
+    var dateHour = moment().format('YYYY-MM-DDThh:mm:ss');
     time.current = dateHour;
-    newData.current.data = dateHour;
+    newFinish.current.data = dateHour;
   }
 
   function checkPedido() {
-    console.log(newData.current);
-    var counter = 0;
-    // Validation for empty input
+    getLocal();
     if (input == '') {
       AllToast.ToastError('Barra de busca vazia...digite algo');
+      playSound(4);
     }
     // Input with value
     else {
-      // Loop for search pedidos
-      for (let i = 0; i < pedidos.length; i++) {
-        // Validation for equal results
-        if (pedidos[i].etiqueta == input) {
-          // Call the time and geolocalization function
-          getLocal();
-          var checkItem = {
-            itemId: pedidos[i].id,
-            time: time.current,
-            longitude: long.current,
-            latitude: lati.current,
-          };
-
-          var secondCounter = 0;
-
-          if (newData.current.itens.length === 0) {
-            newData.current.itens.push(checkItem);
-          } else {
-            newData.current.itens.map(item => {
-              if (item.itemId === pedidos[i].id) {
-                AllToast.ToastError('Esse item já foi adicionado !');
-              } else {
-                secondCounter++;
-                if (secondCounter === newData.current.itens.length) {
-                  AllToast.ToastError('Item adicionado !');
-                  // Adicionar som ao concluir
-                  newData.current.itens.push(checkItem);
-                }
-              }
-            });
-          }
-        } else {
-          counter++;
-          if (counter === pedidos.length) {
-            AllToast.ToastError('Código de barras não encontrado !');
-          }
-        }
+      const filteredData = allItems.filter(res => res.etiqueta !== input);
+      if (filteredData.length == allItems.length) {
+        playSound(3);
+        AllToast.ToastError('Esse item já foi adicionado');
+        setInput('');
+      } else {
+        const data = allItems.filter(res => res.etiqueta === input);
+        const checkItem = {
+          itemId: data[0].id,
+          time: time.current,
+          longitude: longitude,
+          latitude: latitude,
+        };
+        selectedItems.current.push(
+          allItems.filter(res => res.etiqueta === input),
+        );
+        newFinish.current.itens.push(checkItem);
+        setAllItems(allItems.filter(res => res.etiqueta !== input));
+        playSound(1);
+        setInput('');
       }
     }
   }
@@ -100,9 +104,6 @@ const EntregasDetalhes = ({route}) => {
     <View style={styles.container}>
       <View style={styles.secondContainer}>
         <Text style={styles.name}>{itemData.nome}</Text>
-        <Text style={styles.entrega}>
-          {itemData.dataPrevisao.substr(0, 10)}
-        </Text>
       </View>
       <View style={styles.thirdContainer}>
         <View style={styles.codeContainer}>
@@ -134,13 +135,18 @@ const EntregasDetalhes = ({route}) => {
       <View style={styles.fourContainer}>
         <View style={styles.topicContainer}>
           <Text style={styles.topic}>Pedidos</Text>
-          <Text style={styles.subTopic}>Selecione clicando no pedido</Text>
         </View>
-        <PedidosList data={itemData.pedidos} checkData={newData} />
+        {isLoading ? (
+          <View style={[styles.loadingContainer, styles.horizontal]}>
+            <ActivityIndicator size="large" color="#2D2D2D" />
+          </View>
+        ) : (
+          <PedidosList data={allItems} />
+        )}
       </View>
       <View style={styles.confirmContainer}>
         <TouchableOpacity
-          onPress={() => alert('search')}
+          onPress={() => finishAll()}
           style={styles.appButtonConfirm}>
           <Text
             style={{
@@ -298,5 +304,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 8,
     justifyContent: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
   },
 });

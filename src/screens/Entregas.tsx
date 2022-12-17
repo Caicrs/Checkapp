@@ -6,24 +6,44 @@ import {FlatList, TextInput} from 'react-native-gesture-handler';
 import {data} from './data';
 import {useAuth} from '../context/AuthContext';
 import LoadingComponent from '../components/loading';
+import api from '../services/Api';
+import {AllToast} from '../components/toast';
+
 
 const Entregas = ({navigation}) => {
   const [input, setInput] = useState('');
+  const [data, setData] = useState<any>([]);
   const [dataSearched, setDataSearched] = useState<any>([]);
-  const {GetAllPedidos, pedidos} = useAuth();
-
+  const {token, pedidos} = useAuth();
+  
   useEffect(() => {
+    async function GetAllPedidos() {
+      const tkn = await token.replace(/("|')/g, '');
+      try {
+        const res = await api.get('/api/v1/cargaEntrega/obter-entrega', {
+          headers: {
+            Authorization: `Bearer ${tkn}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        });
+      console.log(res.data.data)
+        setData(res.data.data);
+        return res;
+      } catch (error: any) {
+        console.log(error);
+        AllToast.ToastError('Desculpe...ocorreu um erro');
+      }
+    }
     GetAllPedidos();
   }, []);
-
-  
 
   const search = () => {
     if (input != '') {
       console.log(input);
       const result: any[] = [];
       for (let i = 0; i < data.length; i++) {
-        var nameFiltered = data[i].name.includes(input);
+        var nameFiltered = data[i].nome.includes(input);
         if (data[i].entrega == input || nameFiltered) {
           result.push(data[i]);
           setDataSearched(result);
@@ -36,40 +56,26 @@ const Entregas = ({navigation}) => {
     }
   };
 
+
+
   return (
     <View style={styles.container}>
       <View style={styles.secondContainer}>
         <Text style={styles.textUser}>Lista de Entregas</Text>
       </View>
-      <View style={styles.searchInput}>
-        <TextInput
-          value={input}
-          onChangeText={text => setInput(text)}
-          style={styles.input}
-          placeholder={'Busque por nome / entrega'}
-          placeholderTextColor={colors.white50}
-          autoCapitalize="none"
-        />
-        <TouchableOpacity
-          onPress={() => search()}
-          style={styles.appButtonContainer}>
-          <SearchIcon width={24} height={24} />
-        </TouchableOpacity>
-      </View>
 
-      {pedidos ? (
+      {data ? (
         <FlatList
           style={styles.thirdContainer}
-          data={dataSearched.length == 0 ? pedidos : dataSearched}
+          data={dataSearched.length == 0 ? data : dataSearched}
           renderItem={({item}) => (
-            
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('EntregasDetalhes', {itemData: item})
               }>
               <View key={Math.floor(Math.random() * 10000)} style={styles.card}>
                 <Text style={styles.entregaId}>
-                  {item.nome} | {item.dataPrevisao.substr(0, 10)} 
+                  {item.nome} 
                 </Text>
               </View>
             </TouchableOpacity>

@@ -1,18 +1,31 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import api from '../services/Api';
+import Geolocation from '@react-native-community/geolocation';
 import {AllToast} from '../components/toast';
-import axios from 'axios';
+import Sound from 'react-native-sound';
 
 interface AuthContextData {
   token: any;
+  longitude: any;
+  latitude: any;
+  backPage: any;
   user: any;
+  playSound: (type:number) => void;
   signIn: (email: string, password: string) => Promise<any>;
   signOut: () => Promise<void>;
   GetAllPedidos: () => Promise<any>;
+  PostPedido: (data: any) => Promise<any>;
   Loading: any;
   setLoading: any;
   pedidos: any;
+  myLocation: () => void;
 }
 
 export const AuthContext = createContext<AuthContextData>(
@@ -26,12 +39,79 @@ interface AuthProps {
 export const AuthProvider: React.FC<AuthProps> = ({children}) => {
   const [token, setToken] = useState<any>(false);
   const [user, setUser] = useState<any>('');
+  const backPage = useRef<number>(0)
   const [Loading, setLoading] = useState<any>(false);
   const [pedidos, setPedidos] = useState<any>(false);
 
   useEffect(() => {
     loadFromStorage();
   }, []);
+
+  const playSound = (type: number) => {
+    switch (type) {
+      case 1:
+        {
+          var sound1 = new Sound(require('../assets/sound.mp3'), error => {
+            if (error) {
+              alert('error' + error.message);
+              return;
+            }
+            sound1.play(() => {
+              sound1.release();
+            });
+          });
+        }
+        break;
+      case 2:
+        {
+          var sound1 = new Sound(
+            require('../assets/entregaFinalizadaSound.mp3'),
+            error => {
+              if (error) {
+                alert('error' + error.message);
+                return;
+              }
+              sound1.play(() => {
+                sound1.release();
+              });
+            },
+          );
+        }
+        break;
+      case 3:
+        {
+          var sound1 = new Sound(
+            require('../assets/itemAlreadyChecked.wav'),
+            error => {
+              if (error) {
+                alert('error' + error.message);
+                return;
+              }
+              sound1.play(() => {
+                sound1.release();
+              });
+            },
+          );
+        }
+        break;
+      case 4:
+        {
+          var sound1 = new Sound(
+            require('../assets/itemDoenstExist.wav'),
+            error => {
+              if (error) {
+                alert('error' + error.message);
+                return;
+              }
+              sound1.play(() => {
+                sound1.release();
+              });
+            },
+          );
+        }
+        break;
+    }
+  };
 
   // SignIn function
   async function signIn(username: string, password: string) {
@@ -43,7 +123,6 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
       const res = await api.post('/api/v1/login/Mobile', data);
       setToken(res.data.data.token);
       setUser(res.data.data.nome);
-      console.log('signed');
       await AsyncStorage.setItem('Token', JSON.stringify(res.data.data.token));
       await AsyncStorage.setItem(
         'User',
@@ -71,7 +150,7 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
   async function GetAllPedidos() {
     console.log('get all -----------');
     const tkn = await token.replace(/("|')/g, '');
-    console.log(tkn)
+    console.log(tkn);
     try {
       const res = await api.get('/api/v1/cargaEntrada/obter-entrada', {
         headers: {
@@ -87,8 +166,56 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
       console.log(error);
       AllToast.ToastError('Desculpe...ocorreu um erro');
     }
+  }
+
+  // Post Pedidos function
+  async function PostPedido(data: any) {
+    const tkn = await token.replace(/("|')/g, '');
+    try {
+      const res = await api.post(
+        '/api/v1/cargaEntrega/finalizar-conferencia',
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${tkn}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      console.log(res.status);
+      if (res.status === 200) {
+        AllToast.ToastError('Entrega finalizada !');
+        backPage.current = 1
+        playSound(2)
+      }
+      
+      return res;
+    } catch (error: any) {
+      console.log(error);
+      AllToast.ToastError('Desculpe...ocorreu um erro');
+    }
   
   }
+
+  const [longitude, setLongitude] = useState<number | boolean>(0);
+  const [latitude, setLatitude] = useState<number | boolean>(0);
+
+  const myLocation = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        setLongitude(position.coords.longitude);
+        setLatitude(position.coords.latitude);
+      },
+      error => {
+        // See error code charts below.
+        console.log(error.code, error.message);
+        setLongitude(false);
+        setLatitude(false);
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    );
+  };
 
   // Load datas from storage function
   // This function get the token and user saveds on AsyncStorage always that app initialize
@@ -105,6 +232,11 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
   return (
     <AuthContext.Provider
       value={{
+        playSound,
+        backPage,
+        myLocation,
+        longitude,
+        latitude,
         token,
         user,
         Loading,
@@ -113,6 +245,7 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
         signOut,
         pedidos,
         GetAllPedidos,
+        PostPedido,
       }}>
       {children}
     </AuthContext.Provider>

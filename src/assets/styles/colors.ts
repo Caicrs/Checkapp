@@ -5,4 +5,5 @@ export const colors = {
     white50 : 'rgba(234,234,234, 0.5)',
     primaryTextColor: '#f8feff',
     black: '#2D2D2D',
+    green: '#12c71e',
 }
