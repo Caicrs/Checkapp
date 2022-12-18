@@ -1,4 +1,9 @@
 {
   "name": "CheckApp",
-  "displayName": "CheckApp"
+  "displayName": "CheckApp",
+  "extra": {
+    "eas": {
+      "projectId": "d89fa78a-2ba8-40f6-9349-b9a8caf8bfef"
+    }
+  }
 }
