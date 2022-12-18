@@ -57,7 +57,7 @@ const EntregasDetalhes = ({route, navigation}) => {
     getLocal();
     PostPedido(newFinish.current);
     if (backPage.current == 1) {
-      navigation.navigate('Entregas');
+      navigation.navigate('Homepage');
     }
   }
 
