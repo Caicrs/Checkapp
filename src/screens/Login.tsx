@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {colors} from '../assets/styles/colors';
+import React, { useState } from 'react';
+import { colors } from '../assets/styles/colors';
 import Logo from '../assets/logo.svg';
 import LoadingComponent from '../components/loading';
 import {
@@ -10,12 +10,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import styled from 'styled-components';
-import {useAuth} from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const {signIn, Loading} = useAuth();
+  const { signIn, Loading } = useAuth();
 
   function Submit() {
     signIn(username, password);
@@ -45,6 +45,7 @@ const Login = ({navigation}) => {
             </View>
             <View style={styles.box}>
               <TextInput
+                secureTextEntry={true}
                 textContentType="password"
                 value={password}
                 onChangeText={text => setPassword(text)}

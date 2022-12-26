@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,12 +7,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import {colors} from '../assets/styles/colors';
-import {TextInput} from 'react-native-gesture-handler';
+import { colors } from '../assets/styles/colors';
+import { TextInput } from 'react-native-gesture-handler';
 import PedidosList from './pedidosList/pedidosList';
-import {AllToast} from '../components/toast';
+import { AllToast } from '../components/toast';
 import moment from 'moment';
-import {useAuth} from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 interface CheckPedido {
   itens: any[];
@@ -21,13 +21,13 @@ interface CheckPedido {
   latitude: number;
 }
 
-const EntregasDetalhes = ({route, navigation}) => {
-  const {itemData} = route.params;
+const EntregasDetalhes = ({ route, navigation }) => {
+  const { itemData } = route.params;
   const [input, setInput] = useState('');
   const time = useRef('');
   const selectedItems = useRef<any[]>([]);
   const [allItems, setAllItems] = useState<any[]>([]);
-  const {myLocation, PostPedido,playSound, longitude, latitude, backPage} = useAuth();
+  const { myLocation, PostPedido, playSound, longitude, latitude, backPage } = useAuth();
   const [isLoading, setLoading] = useState(true);
 
   const newFinish = useRef<CheckPedido>({
@@ -117,6 +117,7 @@ const EntregasDetalhes = ({route, navigation}) => {
             placeholder={'Insira o código de barras'}
             placeholderTextColor={colors.white50}
             autoCapitalize="none"
+            onSubmitEditing={() => checkPedido()}
           />
           <TouchableOpacity
             onPress={() => checkPedido()}
