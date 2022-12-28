@@ -119,6 +119,7 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
       userName: username,
       password: password,
     };
+    setLoading(true)
     try {
       const res = await api.post('/api/v1/login/Mobile', data);
       setToken(res.data.data.token);
@@ -131,10 +132,10 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
       return res;
     } catch (error: any) {
       console.log(error);
-      Loading.current = false;
       AllToast.ToastError(
         'Usuário ou senha incorretos...confira novamente por favor',
       );
+      setLoading(false)
     }
   }
 
@@ -148,9 +149,7 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
 
   // Get All Pedidos function
   async function GetAllPedidos() {
-    console.log('get all -----------');
     const tkn = await token.replace(/("|')/g, '');
-    console.log(tkn);
     try {
       const res = await api.get('/api/v1/cargaEntrada/obter-entrada', {
         headers: {

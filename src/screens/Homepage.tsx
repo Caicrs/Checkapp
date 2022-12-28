@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import Icon from '../assets/delivery-icon.svg';
 import LogoutIcon from '../assets/logout.svg';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
@@ -7,9 +7,11 @@ import {useAuth} from '../context/AuthContext';
 import LoadingComponent from '../components/loading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from '@react-native-community/geolocation';
+import { TextInput } from 'react-native-gesture-handler';
 
 const Homepage = ({navigation}) => {
   const {signOut, user, myLocation,playSound, longitude, latitude} = useAuth();
+  const [input,setInput] = useState('')
 
   function Logout() {
     signOut()

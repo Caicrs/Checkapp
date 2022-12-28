@@ -117,6 +117,7 @@ const EntregasDetalhes = ({ route, navigation }) => {
             placeholder={'Insira o código de barras'}
             placeholderTextColor={colors.white50}
             autoCapitalize="none"
+            returnKeyType="done"
             onSubmitEditing={() => checkPedido()}
           />
           <TouchableOpacity
