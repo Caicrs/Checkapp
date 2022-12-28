@@ -62,8 +62,7 @@ const EntregasDetalhes = ({ route, navigation }) => {
   }
 
   function getLocal() {
-    moment.locale('pt-br');
-    var dateHour = moment().format('YYYY-MM-DDThh:mm:ss');
+    var dateHour = moment().utcOffset('-03:00').format('YYYY-MM-DDThh:mm:ss');
     time.current = dateHour;
     newFinish.current.data = dateHour;
   }
