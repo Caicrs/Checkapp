@@ -197,22 +197,23 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
   
   }
 
-  const [longitude, setLongitude] = useState<number | boolean>(0);
-  const [latitude, setLatitude] = useState<number | boolean>(0);
+  const [longitude, setLongitude] = useState<number>(0);
+  const [latitude, setLatitude] = useState<number>(0);
 
   const myLocation = () => {
     Geolocation.getCurrentPosition(
       position => {
         setLongitude(position.coords.longitude);
         setLatitude(position.coords.latitude);
+        console.log(`longitude: ${position.coords.longitude}, latitude: ${position.coords.latitude}`)
       },
       error => {
         // See error code charts below.
         console.log(error.code, error.message);
-        setLongitude(false);
-        setLatitude(false);
+        setLongitude(0);
+        setLatitude(0);
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      {enableHighAccuracy: true, timeout: 50000, maximumAge: 0},
     );
   };
 

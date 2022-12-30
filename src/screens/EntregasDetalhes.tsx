@@ -37,7 +37,7 @@ const EntregasDetalhes = ({ route, navigation }) => {
     latitude: latitude,
   });
 
-  // scanItens for put the itens inside the pedidos array variable
+  const refInput = React.useRef<TextInput>(null);
 
   useEffect(() => {
     if (allItems.length < 1) {
@@ -51,14 +51,14 @@ const EntregasDetalhes = ({ route, navigation }) => {
       }
     }
     myLocation();
+    refInput.current?.focus();
   }, []);
 
   function finishAll() {
     getLocal();
-    PostPedido(newFinish.current);
-    if (backPage.current == 1) {
+    PostPedido(newFinish.current).then(() => {
       navigation.navigate('Homepage');
-    }
+    });
   }
 
   function getLocal() {
@@ -68,35 +68,55 @@ const EntregasDetalhes = ({ route, navigation }) => {
   }
 
   function checkPedido() {
+
     getLocal();
+
     if (input == '') {
-      AllToast.ToastError('Barra de busca vazia...digite algo');
+      refInput.current?.focus();
+      return;
+    }
+
+    let filteredData = newFinish.current.itens.filter(res => res.etiqueta === input);
+    if (filteredData.length > 0) {
+      playSound(3);
+      AllToast.ToastError('Item ja foi conferido.');
+      setInput('');
+      refInput.current?.focus();
+      return;
+    }
+
+    filteredData = allItems.filter(res => res.etiqueta === input);
+    if (filteredData.length === 0) {
       playSound(4);
+      AllToast.ToastError('Item não encontrado na lista.');
+      setInput('');
+      refInput.current?.focus();
+      return;
     }
-    // Input with value
-    else {
-      const filteredData = allItems.filter(res => res.etiqueta !== input);
-      if (filteredData.length == allItems.length) {
-        playSound(3);
-        AllToast.ToastError('Esse item já foi adicionado');
-        setInput('');
-      } else {
-        const data = allItems.filter(res => res.etiqueta === input);
-        const checkItem = {
-          itemId: data[0].id,
-          time: time.current,
-          longitude: longitude,
-          latitude: latitude,
-        };
-        selectedItems.current.push(
-          allItems.filter(res => res.etiqueta === input),
-        );
-        newFinish.current.itens.push(checkItem);
-        setAllItems(allItems.filter(res => res.etiqueta !== input));
-        playSound(1);
-        setInput('');
-      }
+
+    const data = allItems.filter(res => res.etiqueta === input);
+    const checkItem = {
+      itemId: data[0].id,
+      data: time.current,
+      longitude: longitude,
+      latitude: latitude,
+      etiqueta: input
+    };
+    selectedItems.current.push(
+      allItems.filter(res => res.etiqueta === input),
+    );
+    newFinish.current.itens.push(checkItem);
+    setAllItems(allItems.filter(res => res.etiqueta !== input));
+
+    if (allItems.length === 1) {
+      finishAll();
+      return;
     }
+
+    playSound(1);
+    setInput('');
+    refInput.current?.focus();
+
   }
 
   return (
@@ -117,6 +137,7 @@ const EntregasDetalhes = ({ route, navigation }) => {
             placeholderTextColor={colors.white50}
             autoCapitalize="none"
             returnKeyType="done"
+            ref={refInput}
             onSubmitEditing={() => checkPedido()}
           />
           <TouchableOpacity
@@ -135,7 +156,7 @@ const EntregasDetalhes = ({ route, navigation }) => {
       </View>
       <View style={styles.fourContainer}>
         <View style={styles.topicContainer}>
-          <Text style={styles.topic}>Pedidos</Text>
+          <Text style={styles.topic}>Itens do pedido</Text>
         </View>
         {isLoading ? (
           <View style={[styles.loadingContainer, styles.horizontal]}>

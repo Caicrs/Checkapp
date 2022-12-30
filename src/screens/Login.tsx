@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useEffect } from 'react';
 import { colors } from '../assets/styles/colors';
 import Logo from '../assets/logo.svg';
 import LoadingComponent from '../components/loading';
@@ -17,9 +18,23 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const { signIn, Loading } = useAuth();
 
-  function Submit() {
+  AsyncStorage.getItem('username').then((s) => {
+    setUsername(s??'');
+  }).catch((e) => console.error(e));
+
+  AsyncStorage.getItem('password').then((s) => {
+    setPassword(s??'');
+  }).catch((e) => console.error(e));
+
+  async function Submit() {
+
+    console.log(username)
+    console.log(password)
+
+    await AsyncStorage.setItem('username', username);
+    await AsyncStorage.setItem('password', password);
+
     signIn(username, password);
-    // navigation.navigate('Homepage')
   }
 
   if (Loading) {
@@ -58,7 +73,7 @@ const Login = ({ navigation }) => {
           </Inputs>
 
           <TouchableOpacity
-            onPress={() => Submit()}
+            onPress={ async () => Submit()}
             style={styles.appButtonContainer}>
             <Text style={styles.appButtonText}>Entrar</Text>
           </TouchableOpacity>
