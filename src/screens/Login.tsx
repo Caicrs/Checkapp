@@ -18,13 +18,17 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const { signIn, Loading } = useAuth();
 
-  AsyncStorage.getItem('username').then((s) => {
-    setUsername(s??'');
-  }).catch((e) => console.error(e));
+  useEffect(() => {
+    AsyncStorage.getItem('username').then((s) => {
+      if (username === '')
+        setUsername(s ?? '');
+    }).catch((e) => console.error(e));
 
-  AsyncStorage.getItem('password').then((s) => {
-    setPassword(s??'');
-  }).catch((e) => console.error(e));
+    AsyncStorage.getItem('password').then((s) => {
+      if (username === '')
+        setPassword(s ?? '');
+    }).catch((e) => console.error(e));
+  });
 
   async function Submit() {
 
@@ -73,7 +77,7 @@ const Login = ({ navigation }) => {
           </Inputs>
 
           <TouchableOpacity
-            onPress={ async () => Submit()}
+            onPress={async () => Submit()}
             style={styles.appButtonContainer}>
             <Text style={styles.appButtonText}>Entrar</Text>
           </TouchableOpacity>
