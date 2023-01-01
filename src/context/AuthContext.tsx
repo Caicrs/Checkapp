@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
         {
           var sound1 = new Sound(require('../assets/sound.mp3'), error => {
             if (error) {
-              alert('error' + error.message);
+             // alert('error' + error.message);
               return;
             }
             sound1.play(() => {
@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
             require('../assets/entregaFinalizadaSound.mp3'),
             error => {
               if (error) {
-                alert('error' + error.message);
+               // alert('error' + error.message);
                 return;
               }
               sound1.play(() => {
@@ -84,7 +84,7 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
             require('../assets/itemAlreadyChecked.wav'),
             error => {
               if (error) {
-                alert('error' + error.message);
+                //alert('error' + error.message);
                 return;
               }
               sound1.play(() => {
@@ -100,7 +100,7 @@ export const AuthProvider: React.FC<AuthProps> = ({children}) => {
             require('../assets/itemDoenstExist.wav'),
             error => {
               if (error) {
-                alert('error' + error.message);
+               // alert('error' + error.message);
                 return;
               }
               sound1.play(() => {
